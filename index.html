@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farmer's Yield Predictor</title>
+    <style>
+        body { font-family: sans-serif; background: #eef2f3; display: flex; justify-content: center; padding: 50px; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); width: 350px; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; }
+        #result { color: #28a745; font-weight: bold; margin-top: 20px; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Crop Yield Predictor</h2>
+        <input type="number" id="rainfall" placeholder="Rainfall (mm)" oninput="updatePrediction()">
+        <input type="number" id="temp" placeholder="Temperature (°C)" oninput="updatePrediction()">
+        <div id="result">Enter data to see prediction...</div>
+    </div>
+
+    <script>
+        async function updatePrediction() {
+            const rainfall = document.getElementById('rainfall').value;
+            const temp = document.getElementById('temp').value;
+            const resultDiv = document.getElementById('result');
+
+            if (rainfall && temp) {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({rainfall: parseFloat(rainfall), temp: parseFloat(temp)})
+                });
+                const data = await response.json();
+                resultDiv.innerText = "Expected Yield: " + data.yield.toFixed(2) + " tons";
+            }
+        }
+    </script>
+</body>
+</html>
